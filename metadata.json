@@ -1,0 +1,6 @@
+{
+  "name": "الرووف - The Roof",
+  "description": "تطبيق الرووف لإدارة القعدات والسهرات، ميني بار الأمانة، التيكيت اليومي، وشات ولمّة الصحاب مع المساعد الذكي مُعين.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

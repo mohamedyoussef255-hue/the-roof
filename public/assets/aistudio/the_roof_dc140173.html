@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>الرووف - The Roof</title>
+
+  <!-- PWA Settings -->
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="الرووف" />
+  <link rel="manifest" href='data:application/manifest+json;utf-8,{"name":"الرووف - The Roof","short_name":"الرووف","start_url":".","display":"standalone","background_color":"#0f172a","theme_color":"#0f172a","orientation":"portrait","icons":[{"src":"https://api.iconify.design/lucide:coffee.svg?color=%23f97316","sizes":"192x192","type":"image/svg+xml"}]}' />
+
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: 'var(--brand-color, #f97316)',
+              hover: 'var(--brand-hover, #ea580c)',
+              light: 'var(--brand-light, #ffedd5)',
+              glow: 'var(--brand-glow, rgba(249, 115, 22, 0.25))'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;600;700;800&display=swap');
+    :root {
+      --brand-color: #f97316;
+      --brand-hover: #ea580c;
+      --brand-light: #ffedd5;
+      --brand-glow: rgba(249, 115, 22, 0.25);
+    }
+    * {
+      font-family: 'Cairo', 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, textarea, select {
+      user-select: text;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen pb-24 transition-colors duration-300">
+
+  <!-- ================= TOP NAVIGATION BAR ================= -->
+  <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 transition-colors">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      
+      <!-- Logo + 5-Clicks Admin Trigger -->
+      <div class="flex items-center gap-3 cursor-pointer select-none" id="logoSecretTrigger" title="5 clicks for Admin">
+        <div id="appLogoContainer" class="w-10 h-10 rounded-xl overflow-hidden bg-brand flex items-center justify-center shadow-lg shadow-brand-glow active:scale-95 transition-transform">
+          <i data-lucide="coffee" class="w-6 h-6 text-white" id="defaultLogoIcon"></i>
+          <img id="customLogoImg" src="" alt="Logo" class="w-full h-full object-cover hidden" />
+        </div>
+        <div>
+          <h1 id="appTitleDisplay" class="font-black text-lg text-slate-900 dark:text-white tracking-wide flex items-center gap-1.5">
+            الرووف
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
+          </h1>
+          <p id="appSubtitleDisplay" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">سهرات ولمّة الصحاب</p>
+        </div>
+      </div>
+
+      <!-- Header Controls: Lang, Theme & Profile -->
+      <div class="flex items-center gap-1.5">
+        <!-- Language Switcher -->
+        <button onclick="toggleLanguage()" class="p-2 rounded-xl text-xs font-black bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition" id="langSwitchBtn">
+          EN
+        </button>
+
+        <!-- Dark/Light Mode Toggle -->
+        <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition">
+          <i data-lucide="sun" class="w-4 h-4 hidden dark:block text-amber-400"></i>
+          <i data-lucide="moon" class="w-4 h-4 block dark:hidden text-slate-700"></i>
+        </button>
+
+        <!-- Profile / Switch Account -->
+        <button id="userProfileBtn" class="p-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition">
+          <i data-lucide="user" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="max-w-md mx-auto px-4 pt-3 space-y-4">
+
+    <!-- REELS / STORIES BAR -->
+    <div id="storiesSection" class="space-y-1.5">
+      <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
+        <span class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand"></i>
+          <span data-i18n="reels_title">ريلز وأجواء الرووف</span>
+        </span>
+      </div>
+      <div id="storiesList" class="flex gap-3 overflow-x-auto pb-2 custom-scroll">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- HERO BANNER -->
+    <div class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 bg-slate-900 group">
+      <div class="aspect-[16/9] w-full overflow-hidden bg-slate-800 relative">
+        <img id="heroBannerImg" src="Gemini_Generated_Image_m214tnm214tnm214.jpg" alt="بانر الرووف" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=800&q=80'" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"></div>
+      </div>
+      <div class="absolute bottom-3 right-3 left-3 flex items-end justify-between">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider bg-brand text-white px-2.5 py-0.5 rounded-full" data-i18n="badge_bar">Honesty Bar & Lounge</span>
+          <h2 class="text-white font-extrabold text-base mt-1 drop-shadow-md" data-i18n="banner_welcome">أهلاً بيك في قعدة الرووف</h2>
+        </div>
+        <button onclick="switchTab('ticketTab')" class="bg-brand hover:opacity-90 text-white text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 shadow-lg shadow-brand-glow">
+          <i data-lucide="ticket" class="w-3.5 h-3.5"></i>
+          <span data-i18n="btn_record_ticket">سجل تيكيت اليوم</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- HONESTY ALERT BANNER -->
+    <div id="honestyBroadcastBanner" class="hidden bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3.5 space-y-2">
+      <div class="flex items-start gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center shrink-0">
+          <i data-lucide="heart-handshake" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <h4 class="text-xs font-extrabold text-amber-600 dark:text-amber-300" data-i18n="audit_alert_title">تنويه ودي من شلة الرووف ☕</h4>
+          <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed mt-0.5" data-i18n="audit_alert_body">
+            عملنا جرد سريع للثلاجة ولقينا بعض المسحوبات اللطيفة مكنتش متسجلة سهواً. لو أخدت حاجة، سجلها في البار عشان تلاجتنا تفضل مليانة!
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-1">
+        <button onclick="switchTab('barTab')" class="text-xs bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-3 py-1 rounded-lg" data-i18n="btn_record_bar">
+          سجل طلبك الآن
+        </button>
+      </div>
+    </div>
+
+    <!-- USER BALANCE STATUS CARD -->
+    <div id="userBalanceCard" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand font-black text-sm" id="userInitial">
+          ص
+        </div>
+        <div>
+          <div class="text-xs text-slate-500 dark:text-slate-400">
+            <span data-i18n="welcome_user">منور يا</span> <span id="currentUserNameDisplay" class="font-bold text-slate-800 dark:text-slate-200">صاحبي</span>
+          </div>
+          <div class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-1">
+            <span data-i18n="due_balance">حسابك المستحق:</span> <span id="currentUserBalanceDisplay" class="text-brand">0</span> <span data-i18n="currency">ج.م</span>
+          </div>
+        </div>
+      </div>
+      <button onclick="switchTab('payTab')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-md">
+        <i data-lucide="credit-card" class="w-3.5 h-3.5"></i>
+        <span data-i18n="btn_pay_now">سدد الآن</span>
+      </button>
+    </div>
+
+    <!-- ================= TABS ================= -->
+
+    <!-- TAB 1: TICKET -->
+    <section id="ticketTab" class="tab-content space-y-4">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <i data-lucide="ticket" class="w-5 h-5 text-brand"></i>
+              <span data-i18n="ticket_tab_title">تيكيت قعدة اليوم</span>
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="ticket_tab_desc">رسم القعدة والتكييف والخدمة</p>
+          </div>
+          <div class="text-right">
+            <span class="text-xl font-black text-brand" id="ticketPriceDisplay">50</span>
+            <span class="text-xs text-slate-500 dark:text-slate-400" data-i18n="per_person">ج.م / فرد</span>
+          </div>
+        </div>
+
+        <button id="bookTicketBtn" class="w-full py-3 bg-brand text-white font-black text-sm rounded-xl shadow-lg shadow-brand-glow active:scale-98 transition flex items-center justify-center gap-2">
+          <i data-lucide="check-circle" class="w-4 h-4"></i>
+          <span data-i18n="btn_book_ticket">تسجيل حضوري وتأكيد التيكيت اليوم</span>
+        </button>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+        <div class="flex items-center justify-between">
+          <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+            <i data-lucide="users" class="w-4 h-4 text-emerald-500"></i>
+            <span data-i18n="today_attendees_title">شلة الرووف الحاضرين اليوم</span>
+          </h4>
+          <span id="todayAttendeesCount" class="text-xs bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-0.5 rounded-full font-bold">0 رواد</span>
+        </div>
+        <div id="todayAttendeesList" class="space-y-2 max-h-56 overflow-y-auto custom-scroll"></div>
+      </div>
+    </section>
+
+    <!-- TAB 2: MINI BAR -->
+    <section id="barTab" class="tab-content space-y-4 hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="font-black text-base text-slate-900 dark:text-white" data-i18n="bar_title">ثلاجة وميني بار الرووف</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="bar_desc">اسحب وسجل طلبك لضمان استمرار البار</p>
+        </div>
+        <div class="text-xs bg-slate-200 dark:bg-slate-800 px-2.5 py-1 rounded-lg text-slate-700 dark:text-slate-300 flex items-center gap-1 font-bold">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand"></i>
+          <span data-i18n="honesty_tag">نظام الأمانة</span>
+        </div>
+      </div>
+
+      <div class="flex gap-2 overflow-x-auto pb-1 custom-scroll" id="barCategoryFilter">
+        <button onclick="filterBarItems('all')" class="category-btn px-3 py-1 rounded-lg text-xs font-bold bg-brand text-white" data-i18n="cat_all">الكل</button>
+        <button onclick="filterBarItems('cold')" class="category-btn px-3 py-1 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" data-i18n="cat_cold">ساقع ومياه</button>
+        <button onclick="filterBarItems('hot')" class="category-btn px-3 py-1 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" data-i18n="cat_hot">قهوة وسخن</button>
+        <button onclick="filterBarItems('snacks')" class="category-btn px-3 py-1 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" data-i18n="cat_snacks">مقرمشات وحلويات</button>
+      </div>
+
+      <div id="productsGrid" class="grid grid-cols-2 gap-3"></div>
+    </section>
+
+    <!-- TAB 3: GROUP CHAT -->
+    <section id="chatTab" class="tab-content space-y-3 hidden">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 flex flex-col h-[500px] shadow-sm">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2 mb-2">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-brand/10 text-brand flex items-center justify-center font-bold">
+              <i data-lucide="message-square" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white" data-i18n="chat_title">شات شلة الرووف</h4>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400" data-i18n="chat_desc">تنبيهات وهزار ومواعيد التجمع</p>
+            </div>
+          </div>
+          <span class="text-[10px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full font-bold" data-i18n="live_badge">مباشر</span>
+        </div>
+
+        <div id="chatMessagesBox" class="flex-1 overflow-y-auto space-y-3 pr-1 custom-scroll"></div>
+
+        <form id="chatForm" class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2">
+          <input type="text" id="chatInput" placeholder="اكتب رسالة للشلة..." class="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand" />
+          <button type="submit" class="bg-brand text-white p-2.5 rounded-xl active:scale-95 transition">
+            <i data-lucide="send" class="w-4 h-4"></i>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 4: EVENTS / RSVP -->
+    <section id="eventsTab" class="tab-content space-y-4 hidden">
+      <div class="flex items-center justify-between">
+        <h3 class="font-black text-base text-slate-900 dark:text-white" data-i18n="events_title">سهرات ودعوات الرووف</h3>
+      </div>
+      <div id="eventsList" class="space-y-3"></div>
+    </section>
+
+    <!-- TAB 5: PAYMENT GATEWAY -->
+    <section id="payTab" class="tab-content space-y-4 hidden">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-4 shadow-sm">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div>
+            <h3 class="font-black text-base text-slate-900 dark:text-white" data-i18n="payment_title">تسوية الحساب والدفع</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="payment_desc">سدد مشترياتك والتيكيت بكل سهولة</p>
+          </div>
+          <div class="text-right">
+            <div class="text-[11px] text-slate-500 dark:text-slate-400" data-i18n="required_amount">المبلغ المطلوب</div>
+            <div class="text-xl font-black text-brand" id="payTabBalanceDisplay">0 ج.م</div>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-slate-700 dark:text-slate-300" data-i18n="choose_payment_method">اختر وسيلة الدفع:</label>
+          <div class="grid grid-cols-2 gap-2" id="paymentMethodsGrid"></div>
+        </div>
+
+        <div id="methodDetailsBox" class="bg-slate-100 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-1.5"></div>
+
+        <div class="space-y-3 pt-1">
+          <div>
+            <label class="text-xs text-slate-700 dark:text-slate-300 font-semibold mb-1 block" data-i18n="payment_ref_label">الرقم المرجعي / كود التحويل:</label>
+            <input type="text" id="paymentRefInput" placeholder="Ref-982341 أو رقم المحول منه" class="w-full bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand" />
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-700 dark:text-slate-300 font-semibold mb-1 block" data-i18n="receipt_upload_label">صورة إيصال التحويل (Screenshot):</label>
+            <input type="file" id="receiptFileInput" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-200 dark:file:bg-slate-800 file:text-brand cursor-pointer" />
+            <div id="receiptPreviewBox" class="mt-2 hidden">
+              <img id="receiptPreviewImg" src="" alt="معاينة" class="w-28 h-28 object-cover rounded-xl border border-slate-300 dark:border-slate-700" />
+            </div>
+          </div>
+
+          <button id="submitPaymentBtn" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-600/25 active:scale-98 transition flex items-center justify-center gap-2">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            <span data-i18n="btn_confirm_payment">تأكيد وإرسال إشعار الدفع للإدارة</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= BOTTOM NAVIGATION TABS ================= -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 py-2 transition-colors">
+    <div class="max-w-md mx-auto grid grid-cols-5 gap-1 px-2">
+      <button onclick="switchTab('ticketTab')" class="nav-btn flex flex-col items-center gap-1 py-1 text-brand" data-tab="ticketTab">
+        <i data-lucide="ticket" class="w-4 h-4"></i>
+        <span class="text-[10px] font-bold" data-i18n="nav_ticket">التيكيت</span>
+      </button>
+      <button onclick="switchTab('barTab')" class="nav-btn flex flex-col items-center gap-1 py-1 text-slate-400" data-tab="barTab">
+        <i data-lucide="glass-water" class="w-4 h-4"></i>
+        <span class="text-[10px] font-bold" data-i18n="nav_bar">البار</span>
+      </button>
+      <button onclick="switchTab('chatTab')" class="nav-btn flex flex-col items-center gap-1 py-1 text-slate-400 relative" data-tab="chatTab">
+        <i data-lucide="messages-square" class="w-4 h-4"></i>
+        <span class="text-[10px] font-bold" data-i18n="nav_chat">الشات</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-brand absolute top-1 right-5"></span>
+      </button>
+      <button onclick="switchTab('eventsTab')" class="nav-btn flex flex-col items-center gap-1 py-1 text-slate-400" data-tab="eventsTab">
+        <i data-lucide="calendar" class="w-4 h-4"></i>
+        <span class="text-[10px] font-bold" data-i18n="nav_events">الدعوات</span>
+      </button>
+      <button onclick="switchTab('payTab')" class="nav-btn flex flex-col items-center gap-1 py-1 text-slate-400" data-tab="payTab">
+        <i data-lucide="wallet" class="w-4 h-4"></i>
+        <span class="text-[10px] font-bold" data-i18n="nav_pay">الدفع</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ================= MODAL: STORY / REEL VIEWER ================= -->
+  <div id="storyViewerModal" class="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center p-2 hidden">
+    <button onclick="closeStoryViewer()" class="absolute top-4 left-4 z-50 bg-slate-800/80 p-2 rounded-full text-white">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
+    <div class="w-full max-w-sm h-full max-h-[85vh] relative rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center">
+      <div id="storyMediaContainer" class="w-full h-full flex items-center justify-center"></div>
+      <div class="absolute bottom-4 right-4 left-4 p-3 bg-gradient-to-t from-black/90 to-transparent rounded-xl text-white">
+        <h4 id="storyViewerTitle" class="font-bold text-sm"></h4>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SECRET ADMIN PIN ================= -->
+  <div id="secretPinModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-xs w-full p-5 space-y-4 shadow-2xl text-center">
+      <div class="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center mx-auto">
+        <i data-lucide="lock" class="w-6 h-6"></i>
+      </div>
+      <div>
+        <h3 class="font-extrabold text-base text-slate-900 dark:text-white" data-i18n="admin_pin_title">لوحة مدير النظام</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="admin_pin_desc">أدخل رمز الدخول السري (الافتراضي: 0000)</p>
+      </div>
+
+      <input type="password" id="adminPinInput" maxlength="8" placeholder="••••" class="w-full bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2.5 text-center text-lg tracking-widest text-slate-900 dark:text-white focus:outline-none focus:border-brand" />
+      
+      <div class="flex gap-2">
+        <button onclick="closeSecretPinModal()" class="flex-1 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl" data-i18n="btn_cancel">إلغاء</button>
+        <button id="verifyPinBtn" class="flex-1 py-2 bg-brand text-white font-bold text-xs rounded-xl" data-i18n="btn_enter">دخول</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: COMPLETE ADMIN CONTROL DASHBOARD ================= -->
+  <div id="adminDashboardModal" class="fixed inset-0 z-50 bg-slate-100 dark:bg-slate-950 overflow-y-auto hidden">
+    <div class="max-w-md mx-auto min-h-screen p-4 space-y-5 pb-16">
+      
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+          <h2 class="font-black text-lg text-slate-900 dark:text-white" data-i18n="admin_dashboard_title">لوحة تحكم مدير الرووف</h2>
+        </div>
+        <button onclick="closeAdminDashboard()" class="text-xs bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg" data-i18n="btn_exit">خروج</button>
+      </div>
+
+      <!-- Quick KPI Stats -->
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl shadow-sm">
+          <div class="text-[10px] text-slate-500 dark:text-slate-400">إجمالي المبيعات</div>
+          <div class="text-base font-extrabold text-emerald-500" id="admTotalIncome">0 ج.م</div>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl shadow-sm">
+          <div class="text-[10px] text-slate-500 dark:text-slate-400">أرصدة معلقة</div>
+          <div class="text-base font-extrabold text-brand" id="admPendingBalances">0 ج.م</div>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl shadow-sm">
+          <div class="text-[10px] text-slate-500 dark:text-slate-400">رواد اليوم</div>
+          <div class="text-base font-extrabold text-sky-500" id="admAttendeesToday">0</div>
+        </div>
+      </div>
+
+      <!-- SECTION: THEME ACCENT PALETTE (بنتونة الألوان) -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+        <h4 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+          <i data-lucide="palette" class="w-4 h-4 text-brand"></i>
+          بنتونة ألوان التطبيق (Theme Palette)
+        </h4>
+        <div class="grid grid-cols-4 gap-2 text-center text-xs">
+          <button onclick="setThemeAccent('orange')" class="p-2.5 rounded-xl border border-orange-500/40 bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 font-bold">
+            برتقالي
+          </button>
+          <button onclick="setThemeAccent('emerald')" class="p-2.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold">
+            زمردي
+          </button>
+          <button onclick="setThemeAccent('blue')" class="p-2.5 rounded-xl border border-sky-500/40 bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-400 font-bold">
+            أزرق
+          </button>
+          <button onclick="setThemeAccent('purple')" class="p-2.5 rounded-xl border border-purple-500/40 bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 font-bold">
+            بنفسجي
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION: REELS / STORIES MANAGER (رفع ريلز وبنرات) -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+        <h4 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+          <i data-lucide="clapperboard" class="w-4 h-4 text-purple-500"></i>
+          رفع ريلز وفيديوهات قصيرة في واجهة المستخدم
+        </h4>
+        <form id="admAddStoryForm" class="space-y-2">
+          <input type="text" id="admStoryTitle" required placeholder="عنوان الريل أو الستوري" class="w-full bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white" />
+          <input type="file" id="admStoryFile" accept="video/mp4,video/webm,image/*" required class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:bg-slate-200 dark:file:bg-slate-800 file:text-purple-500 cursor-pointer" />
+          <button type="submit" class="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow-md">
+            نشر الريل في شريط الستوريز
+          </button>
+        </form>
+        <div id="admStoriesList" class="space-y-1.5 pt-2"></div>
+      </div>
+
+      <!-- SECTION: LOGO & BANNER CONTROLS (التحكم باللوجو والبانر) -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+        <h4 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+          <i data-lucide="image" class="w-4 h-4 text-brand"></i>
+          التحكم باللوجو والبانر الرئيسي
+        </h4>
+
+        <div>
+          <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block">تغيير صورة اللوجو (Logo):</label>
+          <input type="file" id="admLogoFileInput" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:bg-slate-200 dark:file:bg-slate-800 file:text-brand cursor-pointer" />
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block">تغيير البانر الرئيسي (Hero Banner):</label>
+          <input type="file" id="admBannerFileInput" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:bg-slate-200 dark:file:bg-slate-800 file:text-brand cursor-pointer" />
+        </div>
+
+        <div class="flex gap-2">
+          <button onclick="saveLogoAndBanner()" class="flex-1 py-2 bg-brand text-white font-bold text-xs rounded-xl shadow-md">
+            تثبيت اللوجو والبانر
+          </button>
+          <button onclick="resetDefaultBanner()" class="py-2 px-3 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl">
+            استرجاع الأصلي
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION: HUMAN AUDIO RECORDINGS -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+        <h4 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+          <i data-lucide="mic" class="w-4 h-4 text-pink-500"></i>
+          رفع التسجيلات الصوتية البشرية (MP3/WAV)
+        </h4>
+
+        <div class="bg-slate-100 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">1. تسجيل الترحيب عند الدخول:</span>
+            <button onclick="previewAudio('welcome')" class="text-[10px] bg-slate-200 dark:bg-slate-800 text-brand px-2 py-0.5 rounded">سماع</button>
+          </div>
+          <input type="file" id="admWelcomeAudioFile" accept="audio/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:bg-slate-200 dark:file:bg-slate-800 file:text-pink-500 cursor-pointer" />
+        </div>
+
+        <div class="bg-slate-100 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">2. تسجيل شكر التيكيت:</span>
+            <button onclick="previewAudio('ticket')" class="text-[10px] bg-slate-200 dark:bg-slate-800 text-brand px-2 py-0.5 rounded">سماع</button>
+          </div>
+          <input type="file" id="admTicketAudioFile" accept="audio/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:bg-slate-200 dark:file:bg-slate-800 file:text-pink-500 cursor-pointer" />
+        </div>
+
+        <div class="bg-slate-100 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">3. تسجيل تذكير البار:</span>
+            <button onclick="previewAudio('bar')" class="text-[10px] bg-slate-200 dark:bg-slate-800 text-brand px-2 py-0.5 rounded">سماع</button>
+          </div>
+          <input type="file" id="admBarAudioFile" accept="audio/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:bg-slate-200 dark:file:bg-slate-800 file:text-pink-500 cursor-pointer" />
+        </div>
+
+        <button onclick="saveVoiceFiles()" class="w-full py-2 bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs rounded-xl shadow-md">
+          حفظ وتثبيت التسجيلات
+        </button>
+      </div>
+
+      <!-- SECTION: INVENTORY AUDIT & HONESTY BROADCAST -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+        <div class="flex items-center justify-between">
+          <h4 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+            <i data-lucide="clipboard-check" class="w-4 h-4 text-amber-500"></i>
+            جرد الثلاجة والمطابقة
+          </h4>
+          <button onclick="triggerHonestyBroadcast()" class="text-[11px] bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/30 px-2.5 py-1 rounded-lg flex items-center gap-1">
+            <i data-lucide="bell-ring" class="w-3 h-3"></i> بث تنبيه مهذب للرواد
+          </button>
+        </div>
+
+        <div id="admAuditTable" class="space-y-2 max-h-56 overflow-y-auto custom-scroll"></div>
+
+        <div class="p-3 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
+          <span class="text-slate-500 dark:text-slate-400">إجمالي العجز غير المسجل:</span>
+          <span id="admAuditDeficitDisplay" class="font-black text-red-500">0 ج.م</span>
+        </div>
+
+        <div class="flex gap-2">
+          <button onclick="applyAuditReconciliation()" class="flex-1 py-2 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-xl shadow-md">
+            اعتماد المخزون الفعلي
+          </button>
+          <button onclick="copyPoliteWhatsAppMsg()" class="py-2 px-3 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl flex items-center gap-1">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> نسخ رسالة واتساب
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION: ADD PRODUCT -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+        <h4 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+          <i data-lucide="plus-circle" class="w-4 h-4 text-emerald-500"></i>
+          إضافة صنف جديد للثلاجة
+        </h4>
+
+        <form id="admAddProductForm" class="space-y-2.5">
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="admNewProdName" required placeholder="اسم الصنف" class="bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white" />
+            <input type="number" id="admNewProdPrice" required placeholder="السعر (ج.م)" class="bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="number" id="admNewProdStock" required placeholder="الكمية / الرصيد" class="bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white" />
+            <select id="admNewProdCategory" class="bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-2 py-2 text-xs text-slate-900 dark:text-white">
+              <option value="cold">ساقع ومياه</option>
+              <option value="hot">قهوة وسخن</option>
+              <option value="snacks">مقرمشات وحلويات</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md">
+            إضافة الصنف للمخزون
+          </button>
+        </form>
+
+        <div class="pt-2">
+          <h5 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">الأصناف الحالية والكميات:</h5>
+          <div id="admProductsList" class="space-y-2 max-h-56 overflow-y-auto custom-scroll"></div>
+        </div>
+      </div>
+
+      <!-- SECTION: APP IDENTITY & PIN -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+        <h4 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+          <i data-lucide="sliders" class="w-4 h-4 text-brand"></i>
+          هوية التطبيق والرمز السري
+        </h4>
+        <div>
+          <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block">اسم التطبيق:</label>
+          <input type="text" id="admAppNameInput" class="w-full bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white" />
+        </div>
+        <div>
+          <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block">رمز دخول المدير السري (PIN):</label>
+          <input type="text" id="admNewPinInput" class="w-full bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white" />
+        </div>
+        <div>
+          <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block">سعر تيكيت القعدة (ج.م):</label>
+          <input type="number" id="admTicketPriceInput" class="w-full bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white" />
+        </div>
+        <button onclick="saveAdminSettings()" class="w-full py-2 bg-brand text-white font-bold text-xs rounded-xl shadow-md">
+          حفظ وتثبيت الإعدادات
+        </button>
+      </div>
+
+      <!-- SECTION: PENDING PAYMENTS -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+        <div class="flex items-center justify-between">
+          <h4 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+            <i data-lucide="receipt" class="w-4 h-4 text-amber-500"></i>
+            إيصالات الدفع المعلقة للاعتماد
+          </h4>
+          <span id="admPendingCount" class="text-xs bg-amber-500/20 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full font-bold">0</span>
+        </div>
+        <div id="admPendingPaymentsList" class="space-y-2"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Audio Player -->
+  <audio id="roofAudioPlayer" class="hidden"></audio>
+
+  <!-- ================= JAVASCRIPT APPLICATION LOGIC ================= -->
+  <script>
+    const STORAGE_KEY = 'roof_app_data_v6';
+
+    const translations = {
+      ar: {
+        reels_title: 'ريلز وأجواء الرووف',
+        badge_bar: 'Honesty Bar & Lounge',
+        banner_welcome: 'أهلاً بيك في قعدة الرووف',
+        btn_record_ticket: 'سجل تيكيت اليوم',
+        audit_alert_title: 'تنويه ودي من شلة الرووف ☕',
+        audit_alert_body: 'عملنا جرد سريع للثلاجة ولقينا بعض المسحوبات اللطيفة مكنتش متسجلة سهواً. لو أخدت حاجة، سجلها في البار عشان تلاجتنا تفضل مليانة!',
+        btn_record_bar: 'سجل طلبك الآن',
+        welcome_user: 'منور يا',
+        due_balance: 'حسابك المستحق:',
+        currency: 'ج.م',
+        btn_pay_now: 'سدد الآن',
+        ticket_tab_title: 'تيكيت قعدة اليوم',
+        ticket_tab_desc: 'رسم القعدة والتكييف والخدمة',
+        per_person: 'ج.م / فرد',
+        btn_book_ticket: 'تسجيل حضوري وتأكيد التيكيت اليوم',
+        today_attendees_title: 'شلة الرووف الحاضرين اليوم',
+        bar_title: 'ثلاجة وميني بار الرووف',
+        bar_desc: 'اسحب وسجل طلبك لضمان استمرار البار',
+        honesty_tag: 'نظام الأمانة',
+        cat_all: 'الكل',
+        cat_cold: 'ساقع ومياه',
+        cat_hot: 'قهوة وسخن',
+        cat_snacks: 'مقرمشات وحلويات',
+        chat_title: 'شات شلة الرووف',
+        chat_desc: 'تنبيهات وهزار ومواعيد التجمع',
+        live_badge: 'مباشر',
+        events_title: 'سهرات ودعوات الرووف',
+        payment_title: 'تسوية الحساب والدفع',
+        payment_desc: 'سدد مشترياتك والتيكيت بكل سهولة',
+        required_amount: 'المبلغ المطلوب',
+        choose_payment_method: 'اختر وسيلة الدفع:',
+        payment_ref_label: 'الرقم المرجعي / كود التحويل:',
+        receipt_upload_label: 'صورة إيصال التحويل (Screenshot):',
+        btn_confirm_payment: 'تأكيد وإرسال إشعار الدفع للإدارة',
+        nav_ticket: 'التيكيت',
+        nav_bar: 'البار',
+        nav_chat: 'الشات',
+        nav_events: 'الدعوات',
+        nav_pay: 'الدفع',
+        admin_pin_title: 'لوحة مدير النظام',
+        admin_pin_desc: 'أدخل رمز الدخول السري (الافتراضي: 0000)',
+        btn_cancel: 'إلغاء',
+        btn_enter: 'دخول',
+        admin_dashboard_title: 'لوحة تحكم مدير الرووف',
+        btn_exit: 'خروج'
+      },
+      en: {
+        reels_title: 'Roof Vibes & Reels',
+        badge_bar: 'Honesty Bar & Lounge',
+        banner_welcome: 'Welcome to The Roof Lounge',
+        btn_record_ticket: 'Book Today Ticket',
+        audit_alert_title: 'Friendly Roof Reminder ☕',
+        audit_alert_body: 'We made a quick stock check and found some unrecorded items. Please record what you took to keep our fridge full!',
+        btn_record_bar: 'Record Now',
+        welcome_user: 'Welcome',
+        due_balance: 'Due Balance:',
+        currency: 'EGP',
+        btn_pay_now: 'Pay Now',
+        ticket_tab_title: 'Daily Entry Ticket',
+        ticket_tab_desc: 'Roof lounge fee, AC, & electricity',
+        per_person: 'EGP / person',
+        btn_book_ticket: 'Check-in & Confirm Ticket',
+        today_attendees_title: "Today's Roof Attendees",
+        bar_title: 'The Roof Fridge & Mini Bar',
+        bar_desc: 'Take freely & record with honesty',
+        honesty_tag: 'Honesty System',
+        cat_all: 'All',
+        cat_cold: 'Cold & Water',
+        cat_hot: 'Coffee & Tea',
+        cat_snacks: 'Snacks & Sweets',
+        chat_title: 'Roof Group Chat',
+        chat_desc: 'Announcements, jokes & hangout times',
+        live_badge: 'LIVE',
+        events_title: 'Roof Gatherings & RSVP',
+        payment_title: 'Balance Settlement & Payment',
+        payment_desc: 'Pay your purchases & tickets easily',
+        required_amount: 'Amount Due',
+        choose_payment_method: 'Select Payment Method:',
+        payment_ref_label: 'Reference No / Sender Mobile:',
+        receipt_upload_label: 'Transfer Screenshot (Receipt):',
+        btn_confirm_payment: 'Confirm & Send Payment to Admin',
+        nav_ticket: 'Ticket',
+        nav_bar: 'Bar',
+        nav_chat: 'Chat',
+        nav_events: 'Events',
+        nav_pay: 'Pay',
+        admin_pin_title: 'Admin Control Center',
+        admin_pin_desc: 'Enter secret PIN (Default: 0000)',
+        btn_cancel: 'Cancel',
+        btn_enter: 'Enter',
+        admin_dashboard_title: 'Roof Admin Dashboard',
+        btn_exit: 'Exit'
+      }
+    };
+
+    const colorAccents = {
+      orange: { brand: '#f97316', hover: '#ea580c', glow: 'rgba(249, 115, 22, 0.25)' },
+      emerald: { brand: '#10b981', hover: '#059669', glow: 'rgba(16, 185, 129, 0.25)' },
+      blue: { brand: '#0284c7', hover: '#0369a1', glow: 'rgba(2, 132, 199, 0.25)' },
+      purple: { brand: '#9333ea', hover: '#7e22ce', glow: 'rgba(147, 51, 234, 0.25)' }
+    };
+
+    const defaultData = {
+      config: {
+        appName: 'الرووف',
+        adminPin: '0000',
+        ticketPrice: 50,
+        logoImg: '',
+        bannerImg: 'Gemini_Generated_Image_m214tnm214tnm214.jpg',
+        broadcastActive: false,
+        themeAccent: 'orange',
+        lang: 'ar',
+        darkMode: true,
+        audioWelcome: '',
+        audioTicket: '',
+        audioBar: '',
+        paymentInfo: {
+          instapay: 'elroof@instapay',
+          vodafone: '01012345678',
+          other: '01198765432'
+        }
+      },
+      currentUser: { id: 'u_default', name: 'أحمد فؤاد', phone: '01000000000', balance: 0 },
+      users: [
+        { id: 'u_default', name: 'أحمد فؤاد', phone: '01000000000', balance: 0 },
+        { id: 'u1', name: 'كابتن محمد', phone: '01000000001', balance: 0 },
+        { id: 'u2', name: 'أحمد عصام', phone: '01100000002', balance: 0 }
+      ],
+      products: [
+        { id: 'p1', name: 'مياه معدنية 600مل', price: 10, stock: 24, category: 'cold', icon: 'droplet' },
+        { id: 'p2', name: 'كانز كوكاكولا / بيبسي', price: 20, stock: 18, category: 'cold', icon: 'cup-soda' },
+        { id: 'p3', name: 'كانز شويبس جولد / رمان', price: 22, stock: 15, category: 'cold', icon: 'glass-water' },
+        { id: 'p4', name: 'قهوة إسبريسو / تركي', price: 25, stock: 30, category: 'hot', icon: 'coffee' },
+        { id: 'p5', name: 'شاي تلقيمة / أعشاب', price: 15, stock: 40, category: 'hot', icon: 'coffee' },
+        { id: 'p6', name: 'شيبسي عائلي مشكل', price: 25, stock: 12, category: 'snacks', icon: 'sparkles' },
+        { id: 'p7', name: 'شوكولاتة سنيكرز / جلاكسي', price: 30, stock: 10, category: 'snacks', icon: 'sparkles' },
+        { id: 'p8', name: 'مكسرات مشكلة مقرمشة', price: 35, stock: 8, category: 'snacks', icon: 'sparkles' }
+      ],
+      stories: [
+        { id: 'st1', title: 'سهرة الخميس في الرووف 🔥', type: 'image', url: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=600&q=80' }
+      ],
+      attendance: [],
+      orders: [],
+      payments: [],
+      chatMessages: [
+        { id: 'm1', sender: 'الإدارة', text: 'منورين يا شباب! التكييف شغال وسهرة سعيدة للجميع ❤️', time: '19:30', isSystem: true }
+      ],
+      events: [
+        { id: 'e1', title: 'سهرة كلاسيكو وماتشات فيفا 🎮', date: 'الجمعة القادمة - 8:00 مساءً', attendees: ['كابتن محمد'] }
+      ]
+    };
+
+    let appData = loadData();
+
+    function loadData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return defaultData;
+      try {
+        return { ...defaultData, ...JSON.parse(saved) };
+      } catch (e) {
+        return defaultData;
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    }
+
+    /* ================= THEME & PALETTE SYSTEM ================= */
+    function applyThemeAndColors() {
+      // Dark / Light Mode
+      if (appData.config.darkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+
+      // Accent Palette
+      const accent = colorAccents[appData.config.themeAccent] || colorAccents.orange;
+      document.documentElement.style.setProperty('--brand-color', accent.brand);
+      document.documentElement.style.setProperty('--brand-hover', accent.hover);
+      document.documentElement.style.setProperty('--brand-glow', accent.glow);
+
+      // Language & Direction
+      const lang = appData.config.lang || 'ar';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('langSwitchBtn').textContent = lang === 'ar' ? 'EN' : 'عربي';
+
+      // Apply i18n
+      const dict = translations[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.textContent = dict[key];
+      });
+    }
+
+    function toggleDarkMode() {
+      appData.config.darkMode = !appData.config.darkMode;
+      saveData();
+      applyThemeAndColors();
+    }
+
+    function toggleLanguage() {
+      appData.config.lang = appData.config.lang === 'ar' ? 'en' : 'ar';
+      saveData();
+      applyThemeAndColors();
+      renderUserInterface();
+    }
+
+    function setThemeAccent(accentName) {
+      if (colorAccents[accentName]) {
+        appData.config.themeAccent = accentName;
+        saveData();
+        applyThemeAndColors();
+        alert('تم تطبيق بنتونة الألوان الجديدة بنجاح!');
+      }
+    }
+
+    /* ================= HUMAN AUDIO PLAYBACK ================= */
+    function playHumanAudio(type) {
+      const audioUrl = {
+        welcome: appData.config.audioWelcome,
+        ticket: appData.config.audioTicket,
+        bar: appData.config.audioBar
+      }[type];
+
+      if (!audioUrl) return;
+      const player = document.getElementById('roofAudioPlayer');
+      player.src = audioUrl;
+      player.play().catch(e => console.log('Autoplay prevented:', e));
+    }
+
+    function previewAudio(type) {
+      const audioUrl = {
+        welcome: appData.config.audioWelcome,
+        ticket: appData.config.audioTicket,
+        bar: appData.config.audioBar
+      }[type];
+
+      if (!audioUrl) {
+        alert('لم يتم رفع ملف صوتي لهذا الموضع!');
+        return;
+      }
+      const player = document.getElementById('roofAudioPlayer');
+      player.src = audioUrl;
+      player.play();
+    }
+
+    /* ================= SECRET ADMIN LOGIN (5 CLICKS ON LOGO) ================= */
+    let logoClickCount = 0;
+    let logoClickTimer = null;
+    const logoSecretTrigger = document.getElementById('logoSecretTrigger');
+    const secretPinModal = document.getElementById('secretPinModal');
+    const adminPinInput = document.getElementById('adminPinInput');
+
+    logoSecretTrigger.addEventListener('click', () => {
+      logoClickCount++;
+      clearTimeout(logoClickTimer);
+      logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 1400);
+
+      if (logoClickCount >= 5) {
+        logoClickCount = 0;
+        openSecretPinModal();
+      }
+    });
+
+    function openSecretPinModal() {
+      adminPinInput.value = '';
+      secretPinModal.classList.remove('hidden');
+      adminPinInput.focus();
+    }
+
+    function closeSecretPinModal() {
+      secretPinModal.classList.add('hidden');
+    }
+
+    document.getElementById('verifyPinBtn').addEventListener('click', verifyAdminPin);
+    adminPinInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') verifyAdminPin();
+    });
+
+    function verifyAdminPin() {
+      const pin = adminPinInput.value.trim();
+      if (pin === appData.config.adminPin) {
+        closeSecretPinModal();
+        openAdminDashboard();
+      } else {
+        alert('الرمز السري غير صحيح!');
+        adminPinInput.value = '';
+        adminPinInput.focus();
+      }
+    }
+
+    /* ================= TAB SWITCHING ================= */
+    let currentActiveCategory = 'all';
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const activeTab = document.getElementById(tabId);
+      if (activeTab) activeTab.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabId) {
+          btn.classList.remove('text-slate-400');
+          btn.classList.add('text-brand');
+        } else {
+          btn.classList.remove('text-brand');
+          btn.classList.add('text-slate-400');
+        }
+      });
+
+      if (tabId === 'barTab') playHumanAudio('bar');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ================= UI RENDERING ================= */
+    function renderUserInterface() {
+      document.getElementById('appTitleDisplay').innerHTML = `
+        ${appData.config.appName}
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
+      `;
+
+      // Custom Logo
+      if (appData.config.logoImg) {
+        document.getElementById('defaultLogoIcon').classList.add('hidden');
+        const customImg = document.getElementById('customLogoImg');
+        customImg.src = appData.config.logoImg;
+        customImg.classList.remove('hidden');
+      } else {
+        document.getElementById('defaultLogoIcon').classList.remove('hidden');
+        document.getElementById('customLogoImg').classList.add('hidden');
+      }
+
+      // Hero Banner
+      if (appData.config.bannerImg) {
+        document.getElementById('heroBannerImg').src = appData.config.bannerImg;
+      }
+
+      const user = appData.currentUser;
+      document.getElementById('currentUserNameDisplay').textContent = user.name;
+      document.getElementById('userInitial').textContent = user.name.charAt(0);
+      document.getElementById('currentUserBalanceDisplay').textContent = user.balance;
+      document.getElementById('payTabBalanceDisplay').textContent = `${user.balance} ${appData.config.lang === 'ar' ? 'ج.م' : 'EGP'}`;
+      document.getElementById('ticketPriceDisplay').textContent = appData.config.ticketPrice;
+
+      const broadcastBanner = document.getElementById('honestyBroadcastBanner');
+      if (appData.config.broadcastActive) {
+        broadcastBanner.classList.remove('hidden');
+      } else {
+        broadcastBanner.classList.add('hidden');
+      }
+
+      renderStories();
+      renderTodayAttendance();
+      renderProducts();
+      renderChatMessages();
+      renderEvents();
+      renderPaymentMethods();
+    }
+
+    /* ================= STORIES & REELS ================= */
+    function renderStories() {
+      const list = document.getElementById('storiesList');
+      list.innerHTML = appData.stories.map(s => `
+        <div onclick="openStoryViewer('${s.id}')" class="shrink-0 w-16 flex flex-col items-center gap-1 cursor-pointer group">
+          <div class="w-14 h-14 rounded-full p-[2px] bg-brand group-hover:scale-105 transition shadow-sm">
+            <div class="w-full h-full rounded-full overflow-hidden bg-slate-800 border-2 border-white dark:border-slate-950 flex items-center justify-center">
+              ${s.type === 'video' ? '<i data-lucide="play" class="w-5 h-5 text-white"></i>' : `<img src="${s.url}" class="w-full h-full object-cover" />`}
+            </div>
+          </div>
+          <span class="text-[10px] text-slate-700 dark:text-slate-300 truncate w-full text-center font-medium">${s.title}</span>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function openStoryViewer(id) {
+      const story = appData.stories.find(s => s.id === id);
+      if (!story) return;
+
+      const container = document.getElementById('storyMediaContainer');
+      document.getElementById('storyViewerTitle').textContent = story.title;
+
+      if (story.type === 'video') {
+        container.innerHTML = `<video src="${story.url}" autoplay controls playsinline class="max-h-full max-w-full rounded-xl"></video>`;
+      } else {
+        container.innerHTML = `<img src="${story.url}" class="max-h-full max-w-full object-contain rounded-xl" />`;
+      }
+
+      document.getElementById('storyViewerModal').classList.remove('hidden');
+    }
+
+    function closeStoryViewer() {
+      const container = document.getElementById('storyMediaContainer');
+      container.innerHTML = '';
+      document.getElementById('storyViewerModal').classList.add('hidden');
+    }
+
+    /* ================= TICKET BOOKING ================= */
+    document.getElementById('bookTicketBtn').addEventListener('click', () => {
+      const user = appData.currentUser;
+      const todayStr = new Date().toLocaleDateString(appData.config.lang === 'ar' ? 'ar-EG' : 'en-US');
+      const already = appData.attendance.some(a => a.userId === user.id && a.date === todayStr);
+
+      if (already) {
+        alert(appData.config.lang === 'ar' ? 'لقد سجلت تيكيت حضور اليوم بالفعل! قعدة سعيدة يا بطل.' : 'You have already confirmed your ticket for today!');
+        return;
+      }
+
+      const cost = Number(appData.config.ticketPrice);
+      appData.attendance.unshift({
+        id: 'att_' + Date.now(),
+        userId: user.id,
+        userName: user.name,
+        date: todayStr,
+        time: new Date().toLocaleTimeString(appData.config.lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' })
+      });
+
+      user.balance += cost;
+      const userInDb = appData.users.find(u => u.id === user.id);
+      if (userInDb) userInDb.balance = user.balance;
+
+      saveData();
+      renderUserInterface();
+      playHumanAudio('ticket');
+    });
+
+    function renderTodayAttendance() {
+      const todayStr = new Date().toLocaleDateString(appData.config.lang === 'ar' ? 'ar-EG' : 'en-US');
+      const list = appData.attendance.filter(a => a.date === todayStr);
+      const listEl = document.getElementById('todayAttendeesList');
+      document.getElementById('todayAttendeesCount').textContent = `${list.length} ${appData.config.lang === 'ar' ? 'رواد' : 'Attendees'}`;
+
+      if (list.length === 0) {
+        listEl.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">${appData.config.lang === 'ar' ? 'كن أول الحاضرين وسجل تيكيت اليوم!' : 'Be the first to check in today!'}</p>`;
+        return;
+      }
+
+      listEl.innerHTML = list.map(a => `
+        <div class="flex items-center justify-between p-2.5 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center justify-center">
+              ${a.userName.charAt(0)}
+            </span>
+            <span class="text-xs font-bold text-slate-800 dark:text-white">${a.userName}</span>
+          </div>
+          <span class="text-[10px] text-slate-500 bg-white dark:bg-slate-900 px-2 py-0.5 rounded-md">${a.time}</span>
+        </div>
+      `).join('');
+    }
+
+    /* ================= MINI BAR ================= */
+    function filterBarItems(cat) {
+      currentActiveCategory = cat;
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('bg-brand', 'text-white');
+        btn.classList.add('bg-slate-200', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+      });
+      event.target.classList.remove('bg-slate-200', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+      event.target.classList.add('bg-brand', 'text-white');
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      let filtered = appData.products;
+      if (currentActiveCategory !== 'all') {
+        filtered = appData.products.filter(p => p.category === currentActiveCategory);
+      }
+
+      const currencyStr = appData.config.lang === 'ar' ? 'ج.م' : 'EGP';
+      const takeBtnStr = appData.config.lang === 'ar' ? 'أخدت ده' : 'Take Item';
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 flex flex-col justify-between hover:border-brand transition shadow-sm">
+          <div class="flex items-start justify-between">
+            <div class="w-9 h-9 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
+              <i data-lucide="${p.icon || 'glass-water'}" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[11px] font-bold ${p.stock > 3 ? 'text-slate-400' : p.stock > 0 ? 'text-amber-500' : 'text-red-500'}">
+              ${p.stock > 0 ? `${appData.config.lang === 'ar' ? 'باقي' : 'Left'}: ${p.stock}` : (appData.config.lang === 'ar' ? 'نفذ' : 'Out')}
+            </span>
+          </div>
+
+          <div class="mt-2.5">
+            <h4 class="text-xs font-bold text-slate-800 dark:text-white">${p.name}</h4>
+            <div class="text-sm font-black text-brand mt-0.5">${p.price} <span class="text-[10px] text-slate-400">${currencyStr}</span></div>
+          </div>
+
+          <button onclick="takeItem('${p.id}')" ${p.stock <= 0 ? 'disabled' : ''} class="mt-2 w-full py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-brand text-slate-700 dark:text-slate-200 hover:text-white disabled:opacity-40 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1 active:scale-95">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            ${takeBtnStr}
+          </button>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function takeItem(prodId) {
+      const prod = appData.products.find(p => p.id === prodId);
+      if (!prod || prod.stock <= 0) return;
+
+      prod.stock--;
+      const user = appData.currentUser;
+      user.balance += prod.price;
+      const userInDb = appData.users.find(u => u.id === user.id);
+      if (userInDb) userInDb.balance = user.balance;
+
+      appData.orders.unshift({
+        id: 'ord_' + Date.now(),
+        userId: user.id,
+        userName: user.name,
+        item: prod.name,
+        price: prod.price,
+        time: new Date().toLocaleTimeString(appData.config.lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' })
+      });
+
+      saveData();
+      renderUserInterface();
+    }
+
+    /* ================= CHAT ================= */
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatBox = document.getElementById('chatMessagesBox');
+
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      appData.chatMessages.push({
+        id: 'msg_' + Date.now(),
+        sender: appData.currentUser.name,
+        text,
+        time: new Date().toLocaleTimeString(appData.config.lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' }),
+        isSystem: false
+      });
+
+      chatInput.value = '';
+      saveData();
+      renderChatMessages();
+    });
+
+    function renderChatMessages() {
+      chatBox.innerHTML = appData.chatMessages.map(m => {
+        const isMe = m.sender === appData.currentUser.name;
+        if (m.isSystem) {
+          return `
+            <div class="p-2.5 rounded-xl bg-brand/10 border border-brand/20 text-center space-y-0.5">
+              <span class="text-[10px] text-brand font-bold block">${appData.config.lang === 'ar' ? 'إشعار من الرووف' : 'Roof Announcement'}</span>
+              <p class="text-xs text-slate-800 dark:text-slate-200">${m.text}</p>
+            </div>
+          `;
+        }
+        return `
+          <div class="flex flex-col ${isMe ? 'items-start' : 'items-end'}">
+            <div class="text-[10px] text-slate-400 mb-0.5">${m.sender}</div>
+            <div class="max-w-[80%] p-2.5 rounded-2xl text-xs ${isMe ? 'bg-brand text-white rounded-tr-none' : 'bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'}">
+              ${m.text}
+            </div>
+            <span class="text-[9px] text-slate-400 mt-0.5">${m.time}</span>
+          </div>
+        `;
+      }).join('');
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    /* ================= EVENTS / RSVP ================= */
+    function renderEvents() {
+      const list = document.getElementById('eventsList');
+      list.innerHTML = appData.events.map(ev => {
+        const isGoing = ev.attendees.includes(appData.currentUser.name);
+        return `
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm">
+            <div class="flex items-start justify-between">
+              <div>
+                <h4 class="font-bold text-sm text-slate-800 dark:text-white">${ev.title}</h4>
+                <p class="text-xs text-brand mt-0.5 flex items-center gap-1">
+                  <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                  ${ev.date}
+                </p>
+              </div>
+              <span class="text-xs bg-slate-200 dark:bg-slate-800 px-2.5 py-1 rounded-full text-slate-700 dark:text-slate-300 font-bold">
+                ${ev.attendees.length} ${appData.config.lang === 'ar' ? 'جايين' : 'Going'}
+              </span>
+            </div>
+            <button onclick="toggleRsvp('${ev.id}')" class="w-full py-2 ${isGoing ? 'bg-emerald-600/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white'} text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5">
+              <i data-lucide="${isGoing ? 'check' : 'user-plus'}" class="w-4 h-4"></i>
+              ${isGoing ? (appData.config.lang === 'ar' ? 'أنا جاي ومأكد الحضور ✅' : 'I am Going ✅') : (appData.config.lang === 'ar' ? 'أنا جاي معاكم 🙋‍♂️' : 'Join Event 🙋‍♂️')}
+            </button>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function toggleRsvp(eventId) {
+      const ev = appData.events.find(e => e.id === eventId);
+      if (!ev) return;
+      const idx = ev.attendees.indexOf(appData.currentUser.name);
+      if (idx > -1) ev.attendees.splice(idx, 1);
+      else ev.attendees.push(appData.currentUser.name);
+      saveData();
+      renderEvents();
+    }
+
+    /* ================= PAYMENT GATEWAY ================= */
+    let selectedPaymentMethod = 'instapay';
+    let uploadedReceiptBase64 = '';
+
+    const methodsData = {
+      instapay: { name: 'InstaPay (إنستاباي)', icon: 'zap' },
+      vodafone: { name: 'Vodafone Cash', icon: 'smartphone' },
+      other: { name: 'Orange / Etisalat / WE', icon: 'wallet' },
+      cash: { name: 'Cash (نقداً)', icon: 'banknote' }
+    };
+
+    function renderPaymentMethods() {
+      const grid = document.getElementById('paymentMethodsGrid');
+      grid.innerHTML = Object.entries(methodsData).map(([key, item]) => `
+        <button type="button" onclick="selectPayMethod('${key}')" class="p-2.5 rounded-xl border text-right transition flex items-center gap-2 ${selectedPaymentMethod === key ? 'bg-brand/10 border-brand text-slate-900 dark:text-white font-bold' : 'bg-slate-100 dark:bg-slate-950 border-slate-300 dark:border-slate-800 text-slate-500'}">
+          <i data-lucide="${item.icon}" class="w-4 h-4 ${selectedPaymentMethod === key ? 'text-brand' : 'text-slate-400'}"></i>
+          <span class="text-xs">${item.name}</span>
+        </button>
+      `).join('');
+      lucide.createIcons();
+      updateMethodDetails();
+    }
+
+    function selectPayMethod(key) {
+      selectedPaymentMethod = key;
+      renderPaymentMethods();
+    }
+
+    function updateMethodDetails() {
+      const box = document.getElementById('methodDetailsBox');
+      const p = appData.config.paymentInfo;
+      if (selectedPaymentMethod === 'instapay') {
+        box.innerHTML = `<div class="text-slate-700 dark:text-slate-300 font-bold">عنوان إنستاباي:</div><div class="text-brand font-black text-sm select-all">${p.instapay}</div>`;
+      } else if (selectedPaymentMethod === 'vodafone') {
+        box.innerHTML = `<div class="text-slate-700 dark:text-slate-300 font-bold">محفظة فودافون كاش:</div><div class="text-brand font-black text-sm select-all">${p.vodafone}</div>`;
+      } else if (selectedPaymentMethod === 'other') {
+        box.innerHTML = `<div class="text-slate-700 dark:text-slate-300 font-bold">محافظ أورنج / اتصالات / وي:</div><div class="text-brand font-black text-sm select-all">${p.other}</div>`;
+      } else {
+        box.innerHTML = `<div class="text-slate-700 dark:text-slate-300 font-bold">الدفع كاش في يد مدير القعدة:</div><div class="text-[10px] text-slate-500">سلم المبلغ واضغط تأكيد ليعتمدها المدير.</div>`;
+      }
+    }
+
+    document.getElementById('receiptFileInput').addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          uploadedReceiptBase64 = e.target.result;
+          document.getElementById('receiptPreviewImg').src = uploadedReceiptBase64;
+          document.getElementById('receiptPreviewBox').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById('submitPaymentBtn').addEventListener('click', () => {
+      const user = appData.currentUser;
+      if (user.balance <= 0) {
+        alert(appData.config.lang === 'ar' ? 'ليس عليك أي مبالغ مستحقة حالياً!' : 'No due balance found!');
+        return;
+      }
+
+      const ref = document.getElementById('paymentRefInput').value.trim();
+      appData.payments.unshift({
+        id: 'pay_' + Date.now(),
+        userId: user.id,
+        userName: user.name,
+        amount: user.balance,
+        method: methodsData[selectedPaymentMethod].name,
+        ref: ref || 'بدون رقم مرجعي',
+        receiptImg: uploadedReceiptBase64 || '',
+        status: 'pending',
+        time: new Date().toLocaleTimeString(appData.config.lang === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit' })
+      });
+
+      saveData();
+      alert(appData.config.lang === 'ar' ? 'تم إرسال إشعار الدفع بنجاح للإدارة! سيتم تصفير الحساب فور الاعتماد.' : 'Payment receipt submitted successfully to Admin!');
+      document.getElementById('paymentRefInput').value = '';
+      document.getElementById('receiptFileInput').value = '';
+      document.getElementById('receiptPreviewBox').classList.add('hidden');
+      uploadedReceiptBase64 = '';
+    });
+
+    /* ================= ADMIN CONTROL DASHBOARD ================= */
+    function openAdminDashboard() {
+      document.getElementById('adminDashboardModal').classList.remove('hidden');
+      populateAdminData();
+    }
+
+    function closeAdminDashboard() {
+      document.getElementById('adminDashboardModal').classList.add('hidden');
+      renderUserInterface();
+    }
+
+    function populateAdminData() {
+      const c = appData.config;
+      document.getElementById('admAppNameInput').value = c.appName;
+      document.getElementById('admNewPinInput').value = c.adminPin;
+      document.getElementById('admTicketPriceInput').value = c.ticketPrice;
+
+      const totalPending = appData.users.reduce((acc, u) => acc + (u.balance || 0), 0);
+      document.getElementById('admPendingBalances').textContent = `${totalPending} ج.م`;
+
+      const todayStr = new Date().toLocaleDateString(appData.config.lang === 'ar' ? 'ar-EG' : 'en-US');
+      const todayCount = appData.attendance.filter(a => a.date === todayStr).length;
+      document.getElementById('admAttendeesToday').textContent = todayCount;
+
+      renderAdminAuditTable();
+      renderAdminProducts();
+      renderAdminPendingPayments();
+      renderAdminStories();
+    }
+
+    /* Logo & Banner Handlers */
+    function saveLogoAndBanner() {
+      const logoFile = document.getElementById('admLogoFileInput').files[0];
+      const bannerFile = document.getElementById('admBannerFileInput').files[0];
+
+      const readBase64 = (file, cb) => {
+        if (!file) return cb(null);
+        const reader = new FileReader();
+        reader.onload = (e) => cb(e.target.result);
+        reader.readAsDataURL(file);
+      };
+
+      readBase64(logoFile, (logoRes) => {
+        if (logoRes) appData.config.logoImg = logoRes;
+        readBase64(bannerFile, (bannerRes) => {
+          if (bannerRes) appData.config.bannerImg = bannerRes;
+          saveData();
+          alert('تم حفظ وتحديث اللوجو والبانر بنجاح!');
+          renderUserInterface();
+        });
+      });
+    }
+
+    function resetDefaultBanner() {
+      appData.config.bannerImg = 'Gemini_Generated_Image_m214tnm214tnm214.jpg';
+      appData.config.logoImg = '';
+      saveData();
+      renderUserInterface();
+      alert('تم استرجاع اللوجو والبانر الأصلي!');
+    }
+
+    /* Story Reels Upload */
+    document.getElementById('admAddStoryForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('admStoryTitle').value.trim();
+      const file = document.getElementById('admStoryFile').files[0];
+      if (!file) return;
+
+      const isVideo = file.type.startsWith('video');
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        appData.stories.unshift({
+          id: 'st_' + Date.now(),
+          title,
+          type: isVideo ? 'video' : 'image',
+          url: ev.target.result
+        });
+        saveData();
+        renderAdminStories();
+        renderStories();
+        document.getElementById('admAddStoryForm').reset();
+        alert('تم نشر الريل بنجاح في واجهة المستخدم!');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function renderAdminStories() {
+      const list = document.getElementById('admStoriesList');
+      list.innerHTML = appData.stories.map(s => `
+        <div class="flex items-center justify-between p-2 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+          <span class="font-bold text-slate-800 dark:text-slate-200">${s.title} (${s.type})</span>
+          <button onclick="deleteStory('${s.id}')" class="text-red-500 font-bold hover:underline">حذف</button>
+        </div>
+      `).join('');
+    }
+
+    function deleteStory(id) {
+      appData.stories = appData.stories.filter(s => s.id !== id);
+      saveData();
+      renderAdminStories();
+      renderStories();
+    }
+
+    /* Human Voice Recordings */
+    function saveVoiceFiles() {
+      const wFile = document.getElementById('admWelcomeAudioFile').files[0];
+      const tFile = document.getElementById('admTicketAudioFile').files[0];
+      const bFile = document.getElementById('admBarAudioFile').files[0];
+
+      const readAudio = (file, cb) => {
+        if (!file) return cb(null);
+        const reader = new FileReader();
+        reader.onload = (e) => cb(e.target.result);
+        reader.readAsDataURL(file);
+      };
+
+      readAudio(wFile, (resW) => {
+        if (resW) appData.config.audioWelcome = resW;
+        readAudio(tFile, (resT) => {
+          if (resT) appData.config.audioTicket = resT;
+          readAudio(bFile, (resB) => {
+            if (resB) appData.config.audioBar = resB;
+            saveData();
+            alert('تم تثبيت وحفظ الملفات الصوتية البشرية بنجاح!');
+          });
+        });
+      });
+    }
+
+    /* Inventory & Audit */
+    function renderAdminAuditTable() {
+      const table = document.getElementById('admAuditTable');
+      table.innerHTML = appData.products.map(p => `
+        <div class="flex items-center justify-between p-2 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+          <div>
+            <div class="font-bold text-slate-800 dark:text-white">${p.name}</div>
+            <div class="text-[11px] text-slate-500">السيستم: <span class="text-brand font-bold">${p.stock}</span></div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-slate-400">الفعلي:</span>
+            <input type="number" id="actual_stock_${p.id}" value="${p.stock}" min="0" oninput="calculateAuditDeficit()" class="w-16 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1 text-center font-bold text-slate-900 dark:text-white" />
+          </div>
+        </div>
+      `).join('');
+      calculateAuditDeficit();
+    }
+
+    function calculateAuditDeficit() {
+      let totalDeficit = 0;
+      appData.products.forEach(p => {
+        const input = document.getElementById(`actual_stock_${p.id}`);
+        if (input) {
+          const actual = Number(input.value) || 0;
+          if (actual < p.stock) totalDeficit += (p.stock - actual) * p.price;
+        }
+      });
+      document.getElementById('admAuditDeficitDisplay').textContent = `${totalDeficit} ج.م`;
+    }
+
+    function applyAuditReconciliation() {
+      appData.products.forEach(p => {
+        const input = document.getElementById(`actual_stock_${p.id}`);
+        if (input) p.stock = Math.max(0, Number(input.value) || 0);
+      });
+      saveData();
+      renderAdminProducts();
+      alert('تم اعتماد وتحديث رصيد المخزون الفعلي بنجاح!');
+    }
+
+    function triggerHonestyBroadcast() {
+      appData.config.broadcastActive = !appData.config.broadcastActive;
+      if (appData.config.broadcastActive) {
+        appData.chatMessages.push({
+          id: 'msg_' + Date.now(),
+          sender: 'إدارة الرووف',
+          text: 'يا شباب عملنا جرد سريع للثلاجة ولقينا مشروبات نسينا نسجلها، اللي أخد حاجة يدخل يسجلها بروقان عشان تلاجتنا تفضل مليانة علطول ❤️',
+          time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+          isSystem: true
+        });
+      }
+      saveData();
+      alert(appData.config.broadcastActive ? 'تم تفعيل التنبيه وبثه للرواد!' : 'تم إيقاف التنبيه.');
+    }
+
+    function copyPoliteWhatsAppMsg() {
+      const msg = `يا شباب شلة الرووف المنورين ❤️ عملنا جرد سريع للثلاجة والبار ولقينا حاجات اتسحبت واتنست في زحمة القعدة والهزار.. برجاء اللي سحب حاجة ومسجلهاش يفتح الأبلكيشن ويسجلها عشان تلاجتنا تفضل عامرة بصحبتنا دايماً ☕🥤`;
+      navigator.clipboard.writeText(msg).then(() => {
+        alert('تم نسخ رسالة الواتساب المهذبة بنجاح!');
+      });
+    }
+
+    /* Products Management */
+    document.getElementById('admAddProductForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('admNewProdName').value.trim();
+      const price = Number(document.getElementById('admNewProdPrice').value);
+      const stock = Number(document.getElementById('admNewProdStock').value);
+      const category = document.getElementById('admNewProdCategory').value;
+
+      appData.products.push({
+        id: 'p_' + Date.now(),
+        name,
+        price,
+        stock,
+        category,
+        icon: category === 'cold' ? 'cup-soda' : category === 'hot' ? 'coffee' : 'sparkles'
+      });
+
+      saveData();
+      renderAdminProducts();
+      renderAdminAuditTable();
+      document.getElementById('admAddProductForm').reset();
+      alert('تمت إضافة الصنف بنجاح للمخزون!');
+    });
+
+    function renderAdminProducts() {
+      const list = document.getElementById('admProductsList');
+      list.innerHTML = appData.products.map(p => `
+        <div class="flex items-center justify-between p-2 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+          <div>
+            <div class="font-bold text-slate-800 dark:text-white">${p.name}</div>
+            <div class="text-[11px] text-brand">${p.price} ج.م | مخزون: ${p.stock}</div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="adjustStock('${p.id}', 5)" class="bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded text-slate-700 dark:text-slate-200">+5</button>
+            <button onclick="adjustStock('${p.id}', -1)" class="bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded text-slate-700 dark:text-slate-200">-1</button>
+            <button onclick="deleteProduct('${p.id}')" class="text-red-500 px-2 py-1">حذف</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function adjustStock(id, delta) {
+      const p = appData.products.find(x => x.id === id);
+      if (p) {
+        p.stock = Math.max(0, p.stock + delta);
+        saveData();
+        renderAdminProducts();
+        renderAdminAuditTable();
+      }
+    }
+
+    function deleteProduct(id) {
+      if (confirm('هل أنت متأكد من حذف هذا الصنف؟')) {
+        appData.products = appData.products.filter(p => p.id !== id);
+        saveData();
+        renderAdminProducts();
+        renderAdminAuditTable();
+      }
+    }
+
+    /* Pending Payments */
+    function renderAdminPendingPayments() {
+      const list = document.getElementById('admPendingPaymentsList');
+      const pendings = appData.payments.filter(p => p.status === 'pending');
+      document.getElementById('admPendingCount').textContent = pendings.length;
+
+      if (pendings.length === 0) {
+        list.innerHTML = `<p class="text-xs text-slate-500 py-3 text-center">لا توجد إيصالات معلقة.</p>`;
+        return;
+      }
+
+      list.innerHTML = pendings.map(p => `
+        <div class="bg-slate-100 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-xs text-slate-800 dark:text-white">${p.userName}</span>
+            <span class="text-xs font-black text-emerald-500">${p.amount} ج.م</span>
+          </div>
+          <div class="text-[11px] text-slate-500">وسيلة: ${p.method} | مرجع: ${p.ref}</div>
+          ${p.receiptImg ? `<img src="${p.receiptImg}" class="w-full h-32 object-contain bg-black rounded-lg" />` : ''}
+          <div class="flex gap-2 pt-1">
+            <button onclick="approvePayment('${p.id}')" class="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg">اعتماد وتسوية</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function approvePayment(payId) {
+      const pay = appData.payments.find(p => p.id === payId);
+      if (!pay) return;
+      pay.status = 'approved';
+      const user = appData.users.find(u => u.id === pay.userId);
+      if (user) {
+        user.balance = Math.max(0, user.balance - pay.amount);
+        if (appData.currentUser && appData.currentUser.id === user.id) {
+          appData.currentUser.balance = user.balance;
+        }
+      }
+      saveData();
+      populateAdminData();
+      alert('تم اعتماد الدفع وتصفير الحساب بنجاح!');
+    }
+
+    function saveAdminSettings() {
+      appData.config.appName = document.getElementById('admAppNameInput').value.trim() || 'الرووف';
+      appData.config.adminPin = document.getElementById('admNewPinInput').value.trim() || '0000';
+      appData.config.ticketPrice = Number(document.getElementById('admTicketPriceInput').value) || 50;
+      saveData();
+      alert('تم حفظ الإعدادات بنجاح!');
+    }
+
+    /* ================= INITIALIZATION ================= */
+    window.addEventListener('DOMContentLoaded', () => {
+      applyThemeAndColors();
+      renderUserInterface();
+      lucide.createIcons();
+      setTimeout(() => playHumanAudio('welcome'), 600);
+    });
+  </script>
+</body>
+</html>
